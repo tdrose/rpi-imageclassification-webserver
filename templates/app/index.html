@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Real-Time Image Update</title>
+</head>
+<body>
+    <img id="image" src="" alt="Image">
+    <p id="text">Additional Text</p>
+    
+    <script>
+
+        function updateImage2() {
+            fetch('getprediction/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: 'text=YourTextHere', // Replace with your additional text
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Update the image source and display the additional text
+                //console.log("test");
+                //console.log(data.image);
+                document.getElementById('image').src = data.image;
+                document.getElementById('text').textContent = data.text;
+            })
+            .catch(error => console.error('Error:', error));
+        }
+
+        function updateImage() {
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', 'getprediction/', true);
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    // Parse the JSON response
+                    var response = JSON.parse(xhr.responseText);
+
+                    // Update the image source and display the additional text
+                    
+                    document.getElementById('image').src = response.image;
+                    document.getElementById('text').textContent = response.text;
+                }
+            };
+            xhr.send();
+        }
+
+        // Poll for updates every 5 seconds
+        setInterval(updateImage2, 1500);
+        // Initial update
+        updateImage2();
+    </script>
+</body>
+</html>
